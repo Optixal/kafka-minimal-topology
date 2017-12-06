@@ -20,5 +20,5 @@
 
 
 ## General Tasks
-- [ ] A channel to display error messages, kafka topic
+- [ ] FailSafe Mechanism: A channel to display error messages, kafka topic
 
