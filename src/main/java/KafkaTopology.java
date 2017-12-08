@@ -61,6 +61,11 @@ public class KafkaTopology {
     }
 
     protected static KafkaSpoutConfig<String, String> getKafkaInputSpoutConfig() {
+        /**
+         * @brief creates a kafkaspoutconfig object and return it
+         * @param bootstrapServers: The bootstrap server ip
+         * @note topic record translator will convert the messages into named tuples with the field names
+         */
         ByTopicRecordTranslator<String, String> trans = new ByTopicRecordTranslator<>(
                 (r) -> new Values(r.topic(), r.partition(), r.offset(), r.key(), r.value()),
                 new Fields("topic", "partition", "offset", "key", "value"), STREAM_INPUT_TO_FIRST_BOLT);
