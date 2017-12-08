@@ -1,9 +1,9 @@
 ## Kafka Tasks
 - [X] Kafka Consumer
-- [X] Confirm if parallelism hint is the same as consuming from different partitions
-- [ ] Confirm if parallelism hint is the same as producing to different partitions
-- [ ] Starting offset configuration
-- [ ] Kafka Producer
+- [X] Confirm if parallelism hint is the same as consuming from different partitions (checked messages' partition no. within Storm bolts - they're distributed)
+- [X] Confirm if parallelism hint is the same as producing to different partitions (subscribed to output topic and checked messages' partition no. - they're distributed)
+- [X] Starting offset configuration (UNCOMMITTED_LATEST)
+- [X] Kafka Producer
 
 ## Parsers
 - [ ] Bro http parser
