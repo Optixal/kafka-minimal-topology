@@ -47,7 +47,10 @@ public class KafkaTopology {
     }
 
     protected static StormTopology getTopology() {
-        // Topology: KafkaSpout ("value") -> KafkaTestBolt ("length") -> KafkaTestBolt2 ("output")
+        /**
+         * @brief create topology that consumes and produces to and from Kafka
+         * @note KafkaSpout ("value") -> KafkaTestBolt ("length") -> KafkaTestBolt2 ("output")
+         */
         final TopologyBuilder tp = new TopologyBuilder();
         tp.setSpout("kafka_spout", getKafkaInputSpout(), 1);
         tp.setBolt("bolt_1", new KafkaTestBolt(), 2).shuffleGrouping("kafka_spout", STREAM_INPUT_TO_FIRST_BOLT);
@@ -57,14 +60,16 @@ public class KafkaTopology {
     }
 
     protected static final KafkaSpout getKafkaInputSpout() {
+        /**
+         * @brief creates an input KafkaSpout
+         */
         return new KafkaSpout<>(getKafkaInputSpoutConfig());
     }
 
     protected static KafkaSpoutConfig<String, String> getKafkaInputSpoutConfig() {
         /**
-         * @brief creates a kafkaspoutconfig object and return it
-         * @param bootstrapServers: The bootstrap server ip
-         * @note topic record translator will convert the messages into named tuples with the field names
+         * @brief creates a KafkaSpoutConfig object based on input topic for KafkaSpout
+         * @note topic record translator will convert the messages into named tuples with the field names within the input Kafka Spout -> First Botl stream
          */
         ByTopicRecordTranslator<String, String> trans = new ByTopicRecordTranslator<>(
                 (r) -> new Values(r.topic(), r.partition(), r.offset(), r.key(), r.value()),
@@ -81,11 +86,17 @@ public class KafkaTopology {
     }
 
     protected static KafkaSpoutRetryService getRetryService() {
+        /**
+         * @brief creates a KafkaSpoutRetryService for KafkaSpoutConfig
+         */
         return new KafkaSpoutRetryExponentialBackoff(TimeInterval.microSeconds(500),
                 TimeInterval.milliSeconds(2), Integer.MAX_VALUE, TimeInterval.seconds(10));
     }
 
     protected static final KafkaBolt<String, String> getKafkaOutputBolt() {
+        /**
+         * @brief creates an output KafkaBolt based on output topic and final output field name
+         */
         return new KafkaBolt<String, String>()
                 .withProducerProperties(getKafkaOutputBoltProps())
                 .withTopicSelector(new DefaultTopicSelector(KAFKA_TOPIC_OUTPUT))
@@ -93,6 +104,9 @@ public class KafkaTopology {
     }
 
     protected static Properties getKafkaOutputBoltProps() {
+        /**
+         * @brief creates a Properties object containing output Kafka output configurations for output KafkaBolt
+         */
         return new Properties() {
             {
                 put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_LOCAL_BROKER);
