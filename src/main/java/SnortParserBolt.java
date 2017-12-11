@@ -6,15 +6,10 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SnortParserBolt extends BaseRichBolt {
 
@@ -26,18 +21,19 @@ public class SnortParserBolt extends BaseRichBolt {
     @Override
     public void prepare(Map topoConf, TopologyContext context, OutputCollector collector) {
         this.collector = collector;
-        csvConfig.put("timestamp",    0);
-        csvConfig.put("ip_src_addr",  1);
-        csvConfig.put("ip_src_port",  2);
-        csvConfig.put("ip_dst_addr",  3);
-        csvConfig.put("ip_dst_port",  4);
-        csvConfig.put("protocol",     5);
-        csvConfig.put("ethsrc",       6);
-        csvConfig.put("ethdst",       7);
         csvConfig.put("source.type", -1);
-        /** TODO move source.type to first index in output */
+        csvConfig.put("timestamp",    1);
+        csvConfig.put("ip_src_addr",  2);
+        csvConfig.put("ip_src_port",  3);
+        csvConfig.put("ip_dst_addr",  4);
+        csvConfig.put("ip_dst_port",  5);
+        csvConfig.put("protocol",     6);
+
+        csvConfig.put("ethsrc",       7);
+        csvConfig.put("ethdst",       8);
 
         format = DateTimeFormatter.ofPattern("MM/dd/yy-HH:mm:ss.SSSSSS").withZone(ZoneId.systemDefault());
+        /* Prepare the date time formatter object to parse the datetime format of snort */
     }
 
     @Override
@@ -50,15 +46,13 @@ public class SnortParserBolt extends BaseRichBolt {
                 output[(int) i] = csvFields[(int) i];
             /** -1 is a filter statement for custom value mapping */
         }
-        output[0] = String.valueOf(date2epoch(csvFields[0]));
-        /** if it is timestamp, convert it to epoch first */
-        output[output.length - 1] = "snort";
 
-        System.out.print("OUTPUT:");
-        for (String str: output) {
-            System.out.print(str);
-        }
-        System.out.println();
+        output[0] = "snort";
+        /* source.type to snort */
+        output[1] = String.valueOf(date2epoch(csvFields[0]));
+        /* Convert timestamp to epoch time */
+
+        System.out.print("[AEGIS]" + Arrays.toString(output));
         collector.emit(new Values(output));
         collector.ack(input);
     }
