@@ -1,3 +1,4 @@
+package Other;
 
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
