@@ -16,16 +16,18 @@
 
 ## Bolts
 - [ ] Hbase connector
-    - [ ] Update hbase database, from source
-    - [ ] Read the values from database
-    - [ ] record caching to reduce number of reads
+    - [X] Insert records into hbase externally
+    - [X] Read the values from database
+    - [ ] Update hbase database, from bolt
+    - [ ] Record caching to reduce number of reads
+    - [ ] Convert threat intel aggregator to work with new setup
 
 - [ ] GeoIP bolt
 - [ ] threatintel bolt
 - [ ] housekeeping bolts (CRUD hbase table)
 
-
 ## General Tasks
+- [ ] CSV manipulator class for inter-bolts communication
 - [ ] FailSafe Mechanism: A channel to display error messages, kafka topic
 - [ ] Config inferface: Flux or alternatives (Readup metron mgmt UI's way of loading parser configs)
-- [ ] Schema reader
+- [ ] Config interface: Schema reader, data structure, etc.
